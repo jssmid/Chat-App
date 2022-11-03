@@ -1,0 +1,147 @@
+{% load static %}
+{% load widget_tweaks %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!--===============================================================================================-->
+
+    <title>ChatJ</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--===============================================================================================-->
+
+    <link rel="stylesheet" href="{% static 'styles/chat.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!--===============================================================================================-->
+
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js" ></script>
+    <!--===============================================================================================-->
+    
+</head>
+
+
+<body>
+    <div  class="container mt-4">
+        <div   class="card mx-auto" style="max-width:400px">
+            <div  class="card-header bg-transparent">
+                <div  id="messages" class="navbar navbar-expand p-0">
+                    <ul class="navbar-nav me-auto align-items-center">
+                        <li class="nav-item">
+                            <a href="{% url 'profile' friend.slug %}" class="nav-link">
+                                <div class="position-relative"
+                                    style="width:50px; height: 50px; border-radius: 50%; padding: 2px">
+                                    <img src="{{ friend.profile.profile_pic.url }}"
+                                        class="img-fluid rounded-circle" alt="">
+                                </div>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'profile' friend.slug %}" class="nav-link">{{ friend.profile.name }}</a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a href="{% url 'home' %}" class="nav-link">
+                                <i class="fas fa-times"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div style=" height: 500px; overflow: auto;" id="box-messages" class="card-body p-4" style="height: 500px; overflow: auto;">
+                
+                <div class="d-flex align-items-baseline text-end justify-content-end mb-4">
+                    
+                    <div class="pe-2">
+                        <div>
+                            <div class="card card-text d-inline-block p-2 px-3 m-1"></div>
+                            <div class="small"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div> 
+            
+            
+        </div>
+        <br>
+        <div class="card-footer bg-white position-absolute w-100 bottom-0 m-0 p-1">
+             <form action="" method="POST">
+                {% csrf_token %}
+                <div class="input-group">
+
+                    {%render_field  form.body autocomplete='off' id='message' %}
+                    
+                    <div class="input-group-text bg-transparent border-0">
+                        <button id="send-btn" class="btn btn-light text-secondary">
+                             <i class="fas fa-location-arrow"></i> 
+                        </button>
+                    </div>
+                </div>
+              </form>
+            </div>
+    </div>
+
+<script>
+    $(document).ready(function(){
+
+        setInterval(function(){
+            $.ajax({
+                type:'GET',
+                url : '{% url "messages" %}',
+                success: function(response){
+                    $("#box-messages").empty();
+                    for (var key in response.messages)
+                    if ( response.messages[key].receiver_id == "{{ user.id }}" && response.messages[key].sender_id ==  "{{ friend.profile.id }}" || response.messages[key].sender_id == "{{ user.id }}" && response.messages[key].receiver_id ==  "{{ friend.profile.id }}" )
+                        if (response.messages[key].receiver_id == "{{ user.id }}" && response.messages[key].sender_id ==  "{{ friend.profile.id }}")
+                        {
+                            var temp= '<div  class="d-flex align-items-baseline mb-4"><div class="pe-2"><div><div style="background-color: rgba(128, 128, 128, 0.623);" class="card card-text d-inline-block p-2 px-3 m-1">' + response.messages[key].body + '</div></div></div></div> ' ;
+                            
+                            $('#box-messages').append(temp);
+                        }
+                        else
+                        {
+                            var temp= '<div class="d-flex align-items-baseline text-end justify-content-end mb-4"><div class="pe-2"><div><div class="card card-text d-inline-block p-2 px-3 m-1">' + response.messages[key].body + '</div></div></div></div> ';
+                            
+                            $('#box-messages').append(temp);
+                        }
+                    else
+                    {
+                        continue;
+                    }
+                 },
+                error: function(response){
+                    alert('error occured')
+                }
+            });
+        },1000);
+
+    });
+</script>
+<script>
+
+    $("form").on("submit", function (e) {
+    var dataString = $(this).serialize();
+     
+    $.ajax({
+      type: "POST",
+      url: "{% url 'chat' friend.slug %}",
+      data: dataString,
+      
+    });
+ 
+    e.preventDefault();
+
+    const clear = document.getElementById('message');
+
+    clear.value = '';
+});
+
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,63 @@
+{% load static %} {% load widget_tweaks %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <!--===============================================================================================-->
+
+    <title>ChatJ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="{% static 'styles/profile.css' %}" />
+    <!--===============================================================================================-->
+    
+  </head>
+  <body>
+    <h2 style="text-align: left"></h2>
+
+    <div class="card">
+      {% if slug == user.slug %}
+      <a style="float: left" href="{% url 'home' %}"
+        ><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</a
+      ><br /><br />
+      <img
+        src="{{ user.profile_pic.url }}"
+        alt="{{user.name}}"
+        style="width: 100%"
+      />
+      <form method="post" action="" enctype="multipart/form-data">
+        {% csrf_token %} 
+        {% render_field form.profile_pic %} <br />
+        <br />
+        <button type="submit">Upload</button>
+      </form>
+
+      <h1>{{ user.name }}</h1>
+
+      {% else %}
+      <a style="float: left" href="{{request.META.HTTP_REFERER}}"
+        ><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</a
+      ><br /><br />
+      <img
+        src="{{ friend.profile.profile_pic.url }}"
+        alt="friend.profile.name"
+        style="width: 100%"
+      />
+      <h1>{{ friend.profile.name }}</h1>
+      {% if friend in userfriends %}
+      <form method="post" action="">
+        {% csrf_token %}
+        <button name="remove-btn" type="submit">
+          <i class="fa fa-minus"></i> Remove
+        </button>
+      </form>
+      {% else %}
+      <form method="post" action="">
+        {% csrf_token %}
+        <button name="add-btn" type="submit">
+          <i class="fa fa-plus"></i> Add
+        </button>
+      </form>
+      {% endif %} 
+      {% endif %}
+    </div>
+  </body>
+</html>

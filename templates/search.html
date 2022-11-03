@@ -1,0 +1,114 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!--===============================================================================================-->
+
+    <title>ChatJ</title>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--===============================================================================================-->
+
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css" />
+    <!--===============================================================================================-->
+
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!--===============================================================================================-->
+
+
+    <html>
+      <head>
+        <!--===============================================================================================-->
+
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" type="text/css" rel="stylesheet" />
+        <link rel="stylesheet" href="{% static 'styles/main.css' %}" />
+        <!--===============================================================================================-->
+        
+      </head>
+      <body>
+        <div class="container">
+          <!-- <h3 class="text-center">Messaging</h3> -->
+          <div class="messaging">
+            <div class="inbox_msg">
+              <div class="inbox_people">
+                <div class="headind_srch">
+                  <div class="recent_heading">
+                    <a href="{% url 'profile' user.slug %}">
+                      <i class="fa fa-user" aria-hidden="true"></i>
+                      {{request.user.profile.name}}</a
+                    ><br />
+                    <a href="{% url 'home' %}"
+                      ><i class="fa fa-arrow-left" aria-hidden="true"></i>
+                      Back</a
+                    ><br />
+                    <a href="{% url 'logout' %}"
+                      ><i class="fa fa-sign-out" aria-hidden="true"></i>
+                      logout</a
+                    >
+                  </div>
+                  <div class="srch_bar">
+                    <div class="stylish-input-group">
+                      <form method="get" action="{% url 'add_friend' %}">
+                        <input
+                          name="q"
+                          type="text"
+                          class="search-bar"
+                          placeholder="Search"
+                        />
+                        <span class="input-group-addon">
+                          <button type="submit" style="cursor: pointer ;">
+                            <i class="fa fa-search" aria-hidden="true"></i>
+                          </button>
+                        </span>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="inbox_chat">
+                  {% for friend in friends %}
+                   {% if friend in usersfriends or  friend.profile.name == user.name  %} 
+                   
+                   {% else %}
+                  <div class="chat_list">
+                    <div class="chat_people">
+                      <div class="chat_img">
+                        <img
+                          class="avatar"
+                          src="{{ friend.profile.profile_pic.url }}"
+                          alt="sunil"
+                        />
+                      </div>
+
+                      <div class="chat_ib">
+                        <a href="{% url 'profile' friend.slug %}">
+                          <button
+                            id="sbtn"
+                            style="
+                              border-radius: 10px;
+                              background-color: rgb(48, 206, 61);
+                              cursor: pointer;
+                              float: right;
+                            "
+                            type="submit"
+                          >
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                          </button>
+                        </a>
+                        <h5>{{ friend.profile.name }}</h5>
+                      </div>
+                    </div>
+                  </div>
+                  {% endif %} 
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </body>
+    </html>
+  </head>
+</html>
