@@ -1,7 +1,7 @@
 # Chat-App
 
 ##   Overview
-Real time chat application, where you can create an account and chat with other people in Real time.
+Real-time chat application, where you can create an account and chat with other people.
 
 > You can vivit the app here https://chatj.up.railway.app/
 
